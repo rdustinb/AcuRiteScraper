@@ -34,5 +34,31 @@ sudo rtl_433 -R 40
 It is possible to store the captured data directly into an InfluxDB with the command:
 
 ```bash
-sudo rtl_433 -R 40 -F "influx://localhost:9999/api/v2/write?org=<org>&bucket=<bucket>,token=<authtoken>"
+sudo rtl_433 -R 40 -F "influx://<hostname>:8086/api/v2/write?org=<org>&bucket=<bucket>,token=<authtoken>"
+```
+
+### Configuring a Service
+A really great article explaining how to create a systemd service for keeping rtl_433 running can be found [here](https://www.apalrd.net/posts/2021/rtl433/).
+
+The gist is to create a file using these commands:
+
+```bash
+sudo touch /etc/systemd/system/rtl433.service
+sudo chmod 664 etc/systemd/system/rtl433.service
+sudo nano /etc/systemd/system/rtl433.service
+```
+
+Then add this to the file:
+
+```ini
+[Unit]
+Description=rtl_433 SDR Receiver Daemon for AcuRite
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/rtl_433 -R 40 -F "influx://<hostname>:8086/api/v2/write?org=<org>&bucket=<bucket>,token=<authtoken>"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
 ```
