@@ -62,3 +62,34 @@ Restart=always
 [Install]
 WantedBy=multi-user.target
 ```
+
+### Grafana Flux Language
+After the source is defined in Grafana and a new dashboard is created with a panel that contains the influxdb source,
+the following snippets need to be added for each type of metric:
+
+```influxql
+-- Temperature
+from(bucket: "AcuRite")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._field == "temperature_F")
+
+-- Humidity
+from(bucket: "AcuRite")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._field == "humidity")
+
+-- Wind Speed
+from(bucket: "AcuRite")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._field == "wind_avg_km_h")
+
+-- Wind Direction
+from(bucket: "AcuRite")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._field == "wind_dir_reg")
+
+-- Rain Amount
+from(bucket: "AcuRite")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._field == "rain_in")
+```
