@@ -63,6 +63,14 @@ Restart=always
 WantedBy=multi-user.target
 ```
 
+Finally, reload systemd and start the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start rtl433
+sudo systemctl enable rtl433
+```
+
 ### Grafana Flux Language
 After the source is defined in Grafana and a new dashboard is created with a panel that contains the influxdb source,
 the following snippets need to be added for each type of metric:
