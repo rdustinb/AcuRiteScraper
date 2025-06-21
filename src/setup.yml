@@ -1,0 +1,45 @@
+---
+- hosts: all
+  become: true
+
+  vars:
+    this_distro: "{{ ansible_facts['distribution'] }}"
+
+  vars_files:
+    - config.yml
+
+  tasks:
+    - name: Install RTL433 package.
+      when: this_distro == "Debian"
+      ansible.builtin.package:
+        update_cache: true
+        cache_valid_time: 3600
+        pkg:
+          - rtl-433
+
+    # TODO maybe convert this copy command to the ansible.builtin.template module to use another file as a template for
+    # writing this file to the remote system. It would allow the use of variables and would clean up this playbook.
+    - name: Write the RTL433 daemon service file and set permissions.
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/rtl433.service"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=rtl_433 SDR Receiver Daemon for AcuRite
+          After=network-online.target
+          
+          [Service]
+          ExecStart=/usr/local/bin/rtl_433 -R 40 -F "influx://{{ myHost }}:{{ myPort }}/api/v2/write?org={{ myOrg }}&bucket={{ myBucket }},token={{ myApiToken }}"
+          Restart=always
+          
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start the RTL433 daemon now and set it to start on boot.
+      ansible.builtin.systemd_service:
+        name: "rtl433"
+        daemon_reload: true
+        state: "started"
+        enabled: true

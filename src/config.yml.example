@@ -1,0 +1,6 @@
+---
+myHost: foo.com
+myPort: 8086
+myOrg: AwesomeOrg
+myBucket: BestBucket
+myApiToken: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
