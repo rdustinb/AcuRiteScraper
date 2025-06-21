@@ -45,7 +45,7 @@ The gist is to create a file using these commands:
 ```bash
 sudo touch /etc/systemd/system/rtl433.service
 sudo chmod 664 etc/systemd/system/rtl433.service
-sudo nano /etc/systemd/system/rtl433.service
+sudo nvim /etc/systemd/system/rtl433.service
 ```
 
 Then add this to the file:
@@ -100,4 +100,15 @@ from(bucket: "AcuRite")
 from(bucket: "AcuRite")
     |> range(start: -24h)
     |> filter(fn: (r) => r._field == "rain_in")
+```
+
+### Removing a Service
+If at some point it is desired to remove the RTL433 service, execute the following commands in order:
+
+```bash
+sudo systemctl stop rtl433
+sudo systemctl reset-failed
+sudo systemctl disable rtl433
+sudo rm /etc/systemd/system/rtl433.service
+sudo systemctl daemon-reload
 ```
