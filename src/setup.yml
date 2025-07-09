@@ -17,8 +17,6 @@
         pkg:
           - rtl-433
 
-    # TODO maybe convert this copy command to the ansible.builtin.template module to use another file as a template for
-    # writing this file to the remote system. It would allow the use of variables and would clean up this playbook.
     - name: Write the RTL433 daemon service file and set permissions.
       ansible.builtin.copy:
         dest: "/etc/systemd/system/rtl433.service"
